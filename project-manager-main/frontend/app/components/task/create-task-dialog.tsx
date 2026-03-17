@@ -58,7 +58,7 @@ export const CreateTaskDialog = ({
       description: "",
       status: "To Do",
       priority: "Medium",
-      dueDate: "",
+      dueDate: undefined, // ⭐ FIXED
       assignees: [],
     },
   });
@@ -67,10 +67,7 @@ export const CreateTaskDialog = ({
 
   const onSubmit = (values: CreateTaskFormData) => {
     mutate(
-      {
-        projectId,
-        taskData: values,
-      },
+      { projectId, taskData: values },
       {
         onSuccess: () => {
           toast.success("Task created successfully");
@@ -78,9 +75,7 @@ export const CreateTaskDialog = ({
           onOpenChange(false);
         },
         onError: (error: any) => {
-          const errorMessage = error.response.data.message;
-          toast.error(errorMessage);
-          console.log(error);
+          toast.error(error.response.data.message);
         },
       }
     );
@@ -95,234 +90,129 @@ export const CreateTaskDialog = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Enter task title" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          placeholder="Enter task description"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter task title" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormItem>
-                              <FormControl>
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                              </FormControl>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder="Enter description" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                              <SelectContent>
-                                <SelectItem value="To Do">To Do</SelectItem>
-                                <SelectItem value="In Progress">
-                                  In Progress
-                                </SelectItem>
-                                <SelectItem value="Done">Done</SelectItem>
-                              </SelectContent>
-                            </FormItem>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            {/* ⭐ DUE DATE FIXED */}
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Due Date</FormLabel>
+                  <Popover modal>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className={
+                          "w-full justify-start text-left font-normal " +
+                          (!field.value ? "text-muted-foreground" : "")
+                        }
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                          format(field.value, "PPPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
 
-                  <FormField
-                    control={form.control}
-                    name="priority"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Priority</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormItem>
-                              <FormControl>
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select priority" />
-                                </SelectTrigger>
-                              </FormControl>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => field.onChange(date)}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                              <SelectContent>
-                                <SelectItem value="Low">Low</SelectItem>
-                                <SelectItem value="Medium">Medium</SelectItem>
-                                <SelectItem value="High">High</SelectItem>
-                              </SelectContent>
-                            </FormItem>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+            {/* ⭐ ASSIGNEES FIXED */}
+            <FormField
+              control={form.control}
+              name="assignees"
+              render={({ field }) => {
+                const selected = field.value || [];
 
-                <FormField
-                  control={form.control}
-                  name="dueDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Due Date</FormLabel>
-                      <FormControl>
-                        <Popover modal={true}>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={
-                                "w-full justify-start text-left font-normal" +
-                                (!field.value ? "text-muted-foreground" : "")
-                              }
+                return (
+                  <FormItem>
+                    <FormLabel>Assignees</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full justify-start"
+                        >
+                          {selected.length === 0
+                            ? "Select assignees"
+                            : `${selected.length} selected`}
+                        </Button>
+                      </PopoverTrigger>
+
+                      <PopoverContent className="max-h-60 overflow-y-auto">
+                        {projectMembers.map((m) => {
+                          const checked = selected.includes(m.user._id);
+
+                          return (
+                            <div
+                              key={m.user._id}
+                              className="flex items-center gap-2 p-2"
                             >
-                              <CalendarIcon className="size-4 mr-2" />
-                              {field.value ? (
-                                format(new Date(field.value), "PPPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
+                              <Checkbox
+                                checked={checked}
+                                onCheckedChange={(c) => {
+                                  let newValue = checked
+                                    ? selected.filter(
+                                        (id) => id !== m.user._id
+                                      )
+                                    : [...selected, m.user._id];
 
-                          <PopoverContent>
-                            <Calendar
-                              mode="single"
-                              selected={
-                                field.value ? new Date(field.value) : undefined
-                              }
-                              onSelect={(date) => {
-                                field.onChange(
-                                  date?.toISOString() || undefined
-                                );
-                              }}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="assignees"
-                  render={({ field }) => {
-                    const selectedMembers = field.value || [];
-
-                    return (
-                      <FormItem>
-                        <FormLabel>Assignees</FormLabel>
-                        <FormControl>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start text-left font-normal min-h-11"
-                              >
-                                {selectedMembers.length === 0 ? (
-                                  <span className="text-muted-foreground">
-                                    Select assignees
-                                  </span>
-                                ) : selectedMembers.length <= 2 ? (
-                                  selectedMembers
-                                    .map((m) => {
-                                      const member = projectMembers.find(
-                                        (wm) => wm.user._id === m
-                                      );
-                                      return `${member?.user.name}`;
-                                    })
-                                    .join(", ")
-                                ) : (
-                                  `${selectedMembers.length} assignees selected`
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-
-                            <PopoverContent
-                              className="w-sm max-h-60 overflow-y-auto p-2"
-                              align="start"
-                            >
-                              <div className="flex flex-col gap-2">
-                                {projectMembers.map((member) => {
-                                  const selectedMember = selectedMembers.find(
-                                    (m) => m === member.user?._id
-                                  );
-                                  return (
-                                    <div
-                                      key={member.user._id}
-                                      className="flex items-center gap-2 p-2 border rounded"
-                                    >
-                                      <Checkbox
-                                        checked={!!selectedMember}
-                                        onCheckedChange={(checked) => {
-                                          if (checked) {
-                                            field.onChange([
-                                              ...selectedMembers,
-
-                                              member.user._id,
-                                            ]);
-                                          } else {
-                                            field.onChange(
-                                              selectedMembers.filter(
-                                                (m) => m !== member.user._id
-                                              )
-                                            );
-                                          }
-                                        }}
-                                        id={`member-${member.user._id}`}
-                                      />
-                                      <span className="truncate flex-1">
-                                        {member.user.name}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-              </div>
-            </div>
+                                  field.onChange(newValue);
+                                  form.trigger("assignees"); // ⭐ FIX
+                                }}
+                              />
+                              <span>{m.user.name}</span>
+                            </div>
+                          );
+                        })}
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
 
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
