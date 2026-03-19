@@ -18,5 +18,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 Deployment Frontend :https://bug-tracker-project-management-app.onrender.com
+
 Deployment Backend  :https://bug-tracker-project-management-app-1.onrender.com
-<img width="888" height="98" alt="image" src="https://github.com/user-attachments/assets/a7a6cafd-b315-4cb9-8d9e-632e3808fc4c" />
+
