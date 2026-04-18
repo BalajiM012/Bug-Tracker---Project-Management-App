@@ -29,7 +29,7 @@ export const Header = ({
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
- const data = useLoaderData() as { workspaces?: Workspace[] } | undefined;
+const data = useLoaderData() as { workspaces?: Workspace[] } | undefined;
 const workspaces = data?.workspaces || [];
   const isOnWorkspacePage = useLocation().pathname.includes("/workspace");
 
