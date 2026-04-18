@@ -41,10 +41,14 @@ const updateData = async <T>(url: string, data: unknown): Promise<T> => {
   return response.data;
 };
 
-const fetchData = async <T>(url: string): Promise<T> => {
-  const response = await api.get(url);
-
-  return response.data;
+const fetchData = async <T>(url: string): Promise<T | null> => {
+  try {
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("fetchData error:", error);
+    return null; // 👈 prevents crashes upstream
+  }
 };
 
 const deleteData = async <T>(url: string): Promise<T> => {
