@@ -9,13 +9,11 @@ import { useState } from "react";
 import { Navigate, Outlet } from "react-router";
 
 export const clientLoader = async () => {
-  try {
-    const [workspaces] = await Promise.all([fetchData("/workspaces")]);
-    return { workspaces };
-  } catch (error) {
-    console.error("Loader error:", error);
-    return { workspaces: [] }; // 👈 THIS LINE FIXES YOUR CRASH
-  }
+  const workspaces = await fetchData("/workspaces");
+
+  return {
+    workspaces: workspaces || [], // 👈 fallback here
+  };
 };
 const DashboardLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
