@@ -13,7 +13,8 @@ export const clientLoader = async () => {
     const [workspaces] = await Promise.all([fetchData("/workspaces")]);
     return { workspaces };
   } catch (error) {
-    console.log(error);
+    console.error("Loader error:", error);
+    return { workspaces: [] }; // 👈 THIS LINE FIXES YOUR CRASH
   }
 };
 const DashboardLayout = () => {
