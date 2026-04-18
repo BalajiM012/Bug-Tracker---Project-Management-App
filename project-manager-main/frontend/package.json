@@ -2,12 +2,12 @@
   "name": "frontend",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build": "react-router build",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-  },
+ "scripts": {
+  "build": "react-router build",
+  "dev": "react-router dev",
+  "start": "react-router-serve ./build/server/index.js",
+  "typecheck": "react-router typegen && tsc"
+},
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-avatar": "^1.1.10",
