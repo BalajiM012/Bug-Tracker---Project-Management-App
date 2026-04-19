@@ -543,7 +543,6 @@ const linkRepo = async (req, res) => {
       });
     }
 
-    // ✅ check user is member (important for security)
     const isMember = workspace.members.some(
       (member) => member.user.toString() === req.user._id.toString()
     );
@@ -554,7 +553,6 @@ const linkRepo = async (req, res) => {
       });
     }
 
-    // ✅ save repo
     workspace.githubRepo = { name, owner, url };
 
     await workspace.save();
