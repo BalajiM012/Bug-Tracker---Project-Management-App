@@ -530,6 +530,46 @@ const acceptInviteByToken = async (req, res) => {
     });
   }
 };
+const linkRepo = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+    const { name, owner, url } = req.body;
+
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({
+        message: "Workspace not found",
+      });
+    }
+
+    // ✅ check user is member (important for security)
+    const isMember = workspace.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "Not authorized",
+      });
+    }
+
+    // ✅ save repo
+    workspace.githubRepo = { name, owner, url };
+
+    await workspace.save();
+
+    res.status(200).json({
+      message: "Repository linked successfully",
+      workspace,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
 export {
   createWorkspace,
   getWorkspaces,
@@ -539,4 +579,5 @@ export {
   inviteUserToWorkspace,
   acceptGenerateInvite,
   acceptInviteByToken,
+  linkRepo,
 };
