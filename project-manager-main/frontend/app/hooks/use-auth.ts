@@ -4,28 +4,29 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useSignUpMutation = () => {
   return useMutation({
-    mutationFn: (data: SignupFormData) => postData("/auth/register", data),
+    mutationFn: (data: SignupFormData) =>
+      postData("/api-v1/auth/register", data),
   });
 };
 
 export const useVerifyEmailMutation = () => {
   return useMutation({
     mutationFn: (data: { token: string }) =>
-      postData("/auth/verify-email", data),
+      postData("/api-v1/auth/verify-email", data),
   });
 };
 
 export const useLoginMutation = () => {
   return useMutation({
     mutationFn: (data: { email: string; password: string }) =>
-      postData("/auth/login", data),
+      postData("/api-v1/auth/login", data),
   });
 };
 
 export const useForgotPasswordMutation = () => {
   return useMutation({
     mutationFn: (data: { email: string }) =>
-      postData("/auth/reset-password-request", data),
+      postData("/api-v1/auth/reset-password-request", data),
   });
 };
 
@@ -35,6 +36,6 @@ export const useResetPasswordMutation = () => {
       token: string;
       newPassword: string;
       confirmPassword: string;
-    }) => postData("/auth/reset-password", data),
+    }) => postData("/api-v1/auth/reset-password", data),
   });
 };
