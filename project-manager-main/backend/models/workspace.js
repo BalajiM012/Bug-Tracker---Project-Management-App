@@ -26,6 +26,11 @@ const workspaceModel = new Schema(
       },
     ],
     projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
+    githubRepo: {
+  name: { type: String },
+  owner: { type: String },
+  url: { type: String },
+},
   },
   { timestamps: true }
 );
