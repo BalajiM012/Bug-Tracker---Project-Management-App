@@ -1,7 +1,7 @@
 import { useAuth } from "@/provider/auth-context";
 import type { Workspace } from "@/types";
 import { Button } from "../ui/button";
-import { Bell, PlusCircle } from "lucide-react";
+import { Bell, PlusCircle, Github } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -96,9 +96,22 @@ const workspaces = data?.workspaces || [];
         </DropdownMenu>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon">
-            <Bell />
-          </Button>
+  <Button variant="ghost" size="icon">
+    <Bell />
+  </Button>
+
+  <Button
+    variant="ghost"
+    size="icon"
+    onClick={() =>
+      window.open(
+        "https://github.com/BalajiM012/Bug-Tracker---Project-Management-App",
+        "_blank"
+      )
+    }
+  >
+    <Github className="w-5 h-5" />
+  </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
