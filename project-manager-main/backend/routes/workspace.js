@@ -9,6 +9,7 @@ import {
   getWorkspaces,
   getWorkspaceStats,
   inviteUserToWorkspace,
+  linkRepo,
 } from "../controllers/workspace.js";
 import {
   inviteMemberSchema,
@@ -56,5 +57,13 @@ router.get("/", authMiddleware, getWorkspaces);
 router.get("/:workspaceId", authMiddleware, getWorkspaceDetails);
 router.get("/:workspaceId/projects", authMiddleware, getWorkspaceProjects);
 router.get("/:workspaceId/stats", authMiddleware, getWorkspaceStats);
+router.put(
+  "/:workspaceId/link-repo",
+  authMiddleware,
+  validateRequest({
+    params: z.object({ workspaceId: z.string() }),
+  }),
+  linkRepo
+);
 
 export default router;
